@@ -1,0 +1,47 @@
+<div class="hero">
+  <h1 class="hero-title">Diagnose your SQL instantly</h1>
+  <p class="hero-subtitle">Paste a query, pick your database, and get an AI-powered analysis of performance, security, and optimization.</p>
+</div>
+
+<div class="card form-card">
+  <% if flash.now[:alert] %>
+    <div class="flash flash--alert"><%= flash.now[:alert] %></div>
+  <% end %>
+
+  <%= form_with url: analyses_path, method: :post, local: true, class: "analyze-form" do |f| %>
+    <div class="form-group">
+      <label class="form-label" for="db_type">Database Type</label>
+      <select name="db_type" id="db_type" class="form-select">
+        <% @db_types.each do |db| %>
+          <option value="<%= db %>" <%= "selected" if @analysis&.db_type == db %>><%= db %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="sql_query">SQL Query</label>
+      <textarea
+        name="sql_query"
+        id="sql_query"
+        class="form-textarea"
+        rows="10"
+        placeholder="SELECT u.id, u.name, COUNT(o.id) AS order_count&#10;FROM users u&#10;LEFT JOIN orders o ON o.user_id = u.id&#10;WHERE u.created_at > '2023-01-01'&#10;GROUP BY u.id, u.name;"
+        spellcheck="false"
+      ><%= @analysis&.sql_query %></textarea>
+    </div>
+
+    <button type="submit" class="btn btn--primary btn--full" id="analyze-btn">
+      <span class="btn-text">Analyze Query</span>
+      <span class="btn-spinner hidden" aria-hidden="true"></span>
+    </button>
+  <% end %>
+</div>
+
+<script>
+  document.querySelector('.analyze-form').addEventListener('submit', function() {
+    const btn = document.getElementById('analyze-btn');
+    btn.querySelector('.btn-text').textContent = 'Analyzing…';
+    btn.querySelector('.btn-spinner').classList.remove('hidden');
+    btn.disabled = true;
+  });
+</script>

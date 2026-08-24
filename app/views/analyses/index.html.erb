@@ -1,0 +1,24 @@
+<div class="page-header">
+  <h1 class="page-title">Analysis History</h1>
+  <a href="/" class="btn btn--primary">New Analysis</a>
+</div>
+
+<% if @analyses.empty? %>
+  <div class="empty-state">
+    <div class="empty-state-icon">🩺</div>
+    <p>No analyses yet. <a href="/">Analyze your first query.</a></p>
+  </div>
+<% else %>
+  <div class="history-list">
+    <% @analyses.each do |analysis| %>
+      <a href="<%= analysis_path(analysis) %>" class="history-item card">
+        <div class="history-item-meta">
+          <span class="badge"><%= analysis.db_type %></span>
+          <span class="history-item-date"><%= analysis.created_at.strftime("%b %d, %Y %H:%M") %></span>
+        </div>
+        <pre class="history-item-query"><%= truncate(analysis.sql_query, length: 160) %></pre>
+        <p class="history-item-explanation"><%= truncate(analysis.explanation, length: 120) %></p>
+      </a>
+    <% end %>
+  </div>
+<% end %>

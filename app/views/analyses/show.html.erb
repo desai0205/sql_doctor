@@ -1,0 +1,63 @@
+<div class="result-header">
+  <div>
+    <h1 class="result-title">Analysis Complete</h1>
+    <p class="result-meta"><%= @analysis.db_type %> &nbsp;·&nbsp; <%= @analysis.created_at.strftime("%b %d, %Y %H:%M") %></p>
+  </div>
+  <a href="/" class="btn btn--outline">New Analysis</a>
+</div>
+
+<div class="card original-query-card">
+  <div class="card-label">Original Query</div>
+  <pre class="code-block"><code><%= @analysis.sql_query %></code></pre>
+</div>
+
+<div class="results-grid">
+  <div class="card result-card">
+    <div class="result-card-icon result-card-icon--blue">📖</div>
+    <h2 class="result-card-title">What This Query Does</h2>
+    <p class="result-card-body"><%= @analysis.explanation %></p>
+  </div>
+
+  <div class="card result-card">
+    <div class="result-card-icon result-card-icon--orange">⚡</div>
+    <h2 class="result-card-title">Performance Issues</h2>
+    <div class="result-card-body prose"><%= simple_format @analysis.performance_issues %></div>
+  </div>
+
+  <div class="card result-card">
+    <div class="result-card-icon result-card-icon--red">🔒</div>
+    <h2 class="result-card-title">Security Issues</h2>
+    <div class="result-card-body prose"><%= simple_format @analysis.security_issues %></div>
+  </div>
+
+  <div class="card result-card">
+    <div class="result-card-icon result-card-icon--green">🗂</div>
+    <h2 class="result-card-title">Index Recommendations</h2>
+    <div class="result-card-body prose"><%= simple_format @analysis.index_recommendations %></div>
+  </div>
+</div>
+
+<div class="card optimized-card">
+  <div class="optimized-header">
+    <div>
+      <div class="result-card-icon result-card-icon--purple">✨</div>
+      <h2 class="result-card-title">Optimized Query</h2>
+    </div>
+    <button class="btn btn--outline btn--sm" onclick="copyOptimized()">Copy</button>
+  </div>
+  <pre class="code-block" id="optimized-query"><code><%= @analysis.optimized_query %></code></pre>
+  <div class="optimization-reason">
+    <strong>Why it's better:</strong> <%= @analysis.optimization_reason %>
+  </div>
+</div>
+
+<script>
+  function copyOptimized() {
+    const text = document.querySelector('#optimized-query code').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+</script>

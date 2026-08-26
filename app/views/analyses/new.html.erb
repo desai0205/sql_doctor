@@ -10,6 +10,16 @@
 
   <%= form_with url: analyses_path, method: :post, local: true, class: "analyze-form" do |f| %>
     <div class="form-group">
+      <label class="form-label" for="sample_query">Sample Query</label>
+      <select id="sample_query" class="form-select">
+        <option value="">— Choose an example to try —</option>
+        <% @sample_queries.each_with_index do |sample, index| %>
+          <option value="<%= index %>"><%= sample[:label] %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label class="form-label" for="db_type">Database Type</label>
       <select name="db_type" id="db_type" class="form-select">
         <% @db_types.each do |db| %>
@@ -38,6 +48,16 @@
 </div>
 
 <script>
+  const samples = <%= raw @sample_queries.to_json %>;
+
+  document.getElementById('sample_query').addEventListener('change', function() {
+    if (this.value === '') return;
+    const sample = samples[parseInt(this.value, 10)];
+    if (!sample) return;
+    document.getElementById('sql_query').value = sample.sql;
+    document.getElementById('db_type').value = sample.db_type;
+  });
+
   document.querySelector('.analyze-form').addEventListener('submit', function() {
     const btn = document.getElementById('analyze-btn');
     btn.querySelector('.btn-text').textContent = 'Analyzing…';

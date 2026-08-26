@@ -9,6 +9,11 @@ Paste a SQL query, pick the database type, and SQLDoctor returns:
 - **Index Recommendations** — specific `CREATE INDEX` statements
 - **Optimized Query** — a rewritten, faster version
 - **Optimization Reason** — why the new version is better
+- **Risk Score** — overall `High` / `Medium` / `Low` risk badge
+
+Also included:
+- **Sample queries** — one-click examples (bad/good patterns) to try
+- **History** — browse past analyses and delete ones you don’t need
 
 ---
 
@@ -60,7 +65,7 @@ bin/rails db:migrate
 ### 4. Start the server
 
 ```bash
-bin/rails server
+ASDF_RUBY_VERSION=3.3.1 bin/rails server
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
@@ -69,12 +74,11 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Usage
 
-1. Paste your SQL query into the text area
-2. Select the database type (PostgreSQL, MySQL, etc.)
+1. Optionally pick a **Sample Query** from the dropdown (fills SQL + database type)
+2. Or paste your own SQL and select the database type (PostgreSQL, MySQL, etc.)
 3. Click **Analyze Query**
-4. View the full AI analysis
-
-Previous analyses are saved and accessible via **History**.
+4. View the full AI analysis, including the risk badge
+5. Open **History** to revisit past results or delete them
 
 ---
 
@@ -83,16 +87,18 @@ Previous analyses are saved and accessible via **History**.
 ```
 app/
   controllers/
-    analyses_controller.rb   # new / create / show / index
+    analyses_controller.rb   # new / create / show / index / destroy
   models/
-    analysis.rb              # ActiveRecord model
+    analysis.rb              # ActiveRecord model + sample queries
   services/
     ai_analysis_service.rb   # OpenAI API wrapper
+  helpers/
+    application_helper.rb    # risk badge helper
   views/
     analyses/
-      new.html.erb           # Query input form
-      show.html.erb          # Analysis results
-      index.html.erb         # History list
+      new.html.erb           # Query input form + samples
+      show.html.erb          # Analysis results + risk + delete
+      index.html.erb         # History list + delete
     layouts/
       application.html.erb   # App shell
   assets/

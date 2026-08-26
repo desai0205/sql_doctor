@@ -4,10 +4,12 @@ class AnalysesController < ApplicationController
   def new
     @analysis = Analysis.new
     @db_types = DB_TYPES
+    @sample_queries = Analysis::SAMPLE_QUERIES
   end
 
   def create
     @db_types = DB_TYPES
+    @sample_queries = Analysis::SAMPLE_QUERIES
     sql_query = params[:sql_query].to_s.strip
     db_type = params[:db_type].to_s.strip
 
@@ -36,7 +38,8 @@ class AnalysesController < ApplicationController
         security_issues: result["security_issues"],
         index_recommendations: result["index_recommendations"],
         optimized_query: result["optimized_query"],
-        optimization_reason: result["optimization_reason"]
+        optimization_reason: result["optimization_reason"],
+        risk_score: Analysis.normalize_risk_score(result["risk_score"])
       )
 
       redirect_to @analysis
@@ -53,6 +56,12 @@ class AnalysesController < ApplicationController
 
   def index
     @analyses = Analysis.order(created_at: :desc).limit(20)
+  end
+
+  def destroy
+    analysis = Analysis.find(params[:id])
+    analysis.destroy!
+    redirect_to analyses_path, notice: "Analysis deleted."
   end
 
   private

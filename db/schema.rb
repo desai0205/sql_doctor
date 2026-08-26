@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_24_080255) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_26_070244) do
   create_table "analyses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "db_type"
@@ -19,6 +19,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_24_080255) do
     t.text "optimization_reason"
     t.text "optimized_query"
     t.text "performance_issues"
+    t.string "risk_score"
     t.text "security_issues"
     t.text "sql_query"
     t.datetime "updated_at", null: false

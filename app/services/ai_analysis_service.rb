@@ -13,6 +13,10 @@ class AiAnalysisService
     - index_recommendations: Specific index recommendations (e.g. "CREATE INDEX idx_users_email ON users(email);"). If none, say "No index recommendations."
     - optimized_query: The rewritten, optimized version of the SQL query. Keep the same logic but improve performance.
     - optimization_reason: A short explanation (1-3 sentences) of what was changed and why it's better.
+    - risk_score: Overall risk level as exactly one of: "High", "Medium", or "Low".
+      High = serious security issues and/or severe performance problems.
+      Medium = moderate issues worth fixing soon.
+      Low = mostly fine with minor or no issues.
     Respond with only valid JSON, no markdown fences.
   PROMPT
 

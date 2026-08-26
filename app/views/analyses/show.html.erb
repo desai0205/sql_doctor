@@ -1,9 +1,17 @@
 <div class="result-header">
   <div>
     <h1 class="result-title">Analysis Complete</h1>
-    <p class="result-meta"><%= @analysis.db_type %> &nbsp;·&nbsp; <%= @analysis.created_at.strftime("%b %d, %Y %H:%M") %></p>
+    <p class="result-meta">
+      <%= @analysis.db_type %> &nbsp;·&nbsp; <%= @analysis.created_at.strftime("%b %d, %Y %H:%M") %>
+      <% if @analysis.risk_score.present? %>
+        &nbsp;·&nbsp; <%= risk_badge(@analysis.risk_score) %>
+      <% end %>
+    </p>
   </div>
-  <a href="/" class="btn btn--outline">New Analysis</a>
+  <div class="result-actions">
+    <a href="/" class="btn btn--outline">New Analysis</a>
+    <%= button_to "Delete", analysis_path(@analysis), method: :delete, class: "btn btn--danger", data: { turbo_confirm: "Delete this analysis?" } %>
+  </div>
 </div>
 
 <div class="card original-query-card">
@@ -43,7 +51,7 @@
       <div class="result-card-icon result-card-icon--purple">✨</div>
       <h2 class="result-card-title">Optimized Query</h2>
     </div>
-    <button class="btn btn--outline btn--sm" onclick="copyOptimized()">Copy</button>
+    <button type="button" class="btn btn--outline btn--sm" onclick="copyOptimized(event)">Copy</button>
   </div>
   <pre class="code-block" id="optimized-query"><code><%= @analysis.optimized_query %></code></pre>
   <div class="optimization-reason">
@@ -52,7 +60,7 @@
 </div>
 
 <script>
-  function copyOptimized() {
+  function copyOptimized(event) {
     const text = document.querySelector('#optimized-query code').textContent;
     navigator.clipboard.writeText(text).then(() => {
       const btn = event.target;

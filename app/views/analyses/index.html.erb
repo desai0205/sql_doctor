@@ -11,14 +11,22 @@
 <% else %>
   <div class="history-list">
     <% @analyses.each do |analysis| %>
-      <a href="<%= analysis_path(analysis) %>" class="history-item card">
-        <div class="history-item-meta">
-          <span class="badge"><%= analysis.db_type %></span>
-          <span class="history-item-date"><%= analysis.created_at.strftime("%b %d, %Y %H:%M") %></span>
+      <div class="history-item card">
+        <div class="history-item-top">
+          <a href="<%= analysis_path(analysis) %>" class="history-item-link">
+            <div class="history-item-meta">
+              <span class="badge"><%= analysis.db_type %></span>
+              <% if analysis.risk_score.present? %>
+                <%= risk_badge(analysis.risk_score) %>
+              <% end %>
+              <span class="history-item-date"><%= analysis.created_at.strftime("%b %d, %Y %H:%M") %></span>
+            </div>
+            <pre class="history-item-query"><%= truncate(analysis.sql_query, length: 160) %></pre>
+            <p class="history-item-explanation"><%= truncate(analysis.explanation, length: 120) %></p>
+          </a>
+          <%= button_to "Delete", analysis_path(analysis), method: :delete, class: "btn btn--danger btn--sm", data: { turbo_confirm: "Delete this analysis?" } %>
         </div>
-        <pre class="history-item-query"><%= truncate(analysis.sql_query, length: 160) %></pre>
-        <p class="history-item-explanation"><%= truncate(analysis.explanation, length: 120) %></p>
-      </a>
+      </div>
     <% end %>
   </div>
 <% end %>
